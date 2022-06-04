@@ -95,5 +95,8 @@ format:
 %: # https://www.gnu.org/software/make/manual/make.html#Automatic-Variables 
 		@:
 
+app-test:
+		$(PY) $(SRC)/app.py -url "https://drive.google.com/drive/folders/1Eu2e4m3nH4Mwh8Jc6r_ULJ4U2y1nK6jK"
+
 app:
-		$(PY) $(SRC)/app.py
+		$(PY) $(SRC)/app.py -url $(filter-out $@,$(MAKECMDGOALS))

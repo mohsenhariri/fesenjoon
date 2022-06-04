@@ -20,25 +20,35 @@ A [simple] [general-purpose] Python template 🐍🚀🎉🦕
     make test
 ```
 
+### Run
+
+```
+    make app-test
+```
+
+with a url
+
+```
+    make app https://drive.google.com/drive/folders/1Eu2e4m3nH4Mwh8Jc6r_ULJ4U2y1nK6jK
+
+```
+
 ### Install packages
 
 ```
     pylint
     black
     google-api-python-client
-    google-auth-oauthlib 
+    google-auth-oauthlib
 ```
+
 https://github.com/googleapis/google-api-python-client
 
 https://github.com/googleapis/google-auth-library-python-oauthlib
 
-
-
 https://developers.google.com/drive/api/guides/about-sdk
 
-
 ![photo](https://developers.google.com/drive/images/drive-intro.png)
-
 
 https://developers.google.com/workspace/guides/auth-overview
 ![image](https://developers.google.com/workspace/images/auth-overview.png)
@@ -49,7 +59,6 @@ https://developers.google.com/workspace/guides/auth-overview
 - Formatter: Black
 - CI: GitHub Actions
 
-
 useful resources:
 
 https://developers.google.com/drive/api/quickstart/python
@@ -58,6 +67,3 @@ https://developers.google.com/drive/api/guides/mime-types
 https://developers.google.com/drive/api/guides/multi-parenting
 https://developers.google.com/drive/api/v3/reference
 https://developers.google.com/drive/picker
-
-
-
