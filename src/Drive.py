@@ -64,7 +64,7 @@ class Drive:
 
         request = self.service.files().get_media(fileId=file_id)
 
-        with open(f"./here/{file_name}", "wb") as fh:
+        with open(f"./download/{file_name}", "wb") as fh:
             downloader = MediaIoBaseDownload(fh, request)
             print(downloader.__dict__)
             done = False
@@ -84,8 +84,12 @@ class Drive:
 
         page_token = None
         while True:
-            # application/vnd.google-apps.folder
-            # https://developers.google.com/drive/api/guides/search-files
+            """
+            application/vnd.google-apps.folder
+            https://developers.google.com/drive/api/guides/search-files
+            https://developers.google.com/drive/api/v3/reference/files/list
+
+            """
             response = (
                 self.service.files()
                 .list(
@@ -121,10 +125,13 @@ class Drive:
             results = (
                 self.service.files()
                 .list(
-                    q=f"'{folder_id}' in parents",
-                    pageSize=10,
+                    # q=f"'{folder_id}' in parents",
+                    pageSize=30,
+                    # supportsAllDrives = True,
                     fields="nextPageToken, files(id, name)",
                     pageToken=page_token,
+                    # driveId =  "0AIyERKEAMNpHUk9PVA",
+                    fileId=file_id
                 )
                 .execute()
             )
