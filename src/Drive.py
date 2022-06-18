@@ -1,7 +1,9 @@
 """
 DocString
 """
-import os.path
+import json
+from pathlib import Path
+from os import getenv
 import pickle
 from urllib.parse import urlparse
 from pprint import pprint as print
@@ -21,10 +23,13 @@ class Drive:
 
     def __init__(self) -> None:
         creds = None
-        if os.path.exists(".token"):
-            with open(".token", "rb") as token_file:
+
+        path_token = Path(getenv("PATH_TOKEN"))
+
+        if path_token.exists():
+            with open(".token", "rb") as fp:
                 try:
-                    creds = pickle.load(token_file)
+                    creds = pickle.load(fp)
                 except Exception as err:
                     print(".token file exists, but it damaged.", err)
 
@@ -35,8 +40,8 @@ class Drive:
                 flow = InstalledAppFlow.from_client_secrets_file(".credentials", SCOPES)
                 creds = flow.run_local_server(port=0)
 
-            with open(".token", "wb") as token_file:
-                pickle.dump(creds, token_file)
+            with open(".token", "wb") as fp:
+                pickle.dump(creds, fp)
 
         try:
             self.service = build("drive", "v3", credentials=creds)
@@ -64,8 +69,8 @@ class Drive:
 
         request = self.service.files().get_media(fileId=file_id)
 
-        with open(f"./download/{file_name}", "wb") as fh:
-            downloader = MediaIoBaseDownload(fh, request)
+        with open(f"./download/{file_name}", "wb") as fd:
+            downloader = MediaIoBaseDownload(fd, request)
             print(downloader.__dict__)
             done = False
             while done is False:
@@ -75,12 +80,86 @@ class Drive:
     def upload_file():
         pass
 
-    def files_folder(self, url):
-        _, folder_id = self.id_parser(url)
+    def directory_structure(self, url):  # fin
+        """
+        finish
 
-        # end_nest = False
-        # structure=[]
-        # while True:
+        all files and folders in the given url
+        """
+
+        _, id = self.id_parser(url)
+
+        def traverse(id, path_parent):
+
+            files_and_folders = self.files_folder(id)
+
+            for file in files_and_folders:
+
+                path_directory = Path(rf'{path_parent}/{file["name"]}')
+                file["path"] = str(path_directory)
+
+                if file["mimeType"] == "application/vnd.google-apps.folder":
+                    file["inside"] = traverse(id=file["id"], path_parent=path_directory)
+
+            with open("save.json", "w") as fp:
+                json.dump(files_and_folders, fp)
+            return files_and_folders
+
+        return traverse(id, path_parent="./")
+
+    def down_all(self, url):
+
+        """
+        Finish
+        Download all files in parent and all sub directories
+        """
+        path_download = Path(getenv("PATH_DOWNLOAD"))
+        if not path_download.exists():
+            raise Exception("Download path doesn't exist.")
+
+        _, id = self.id_parser(url)
+
+        def traverse(id, path_parent):
+
+            files_and_folders = self.files_folder(id)
+
+            for file in files_and_folders:
+                if file["mimeType"] == "application/vnd.google-apps.folder":
+
+                    path_directory = Path(rf'{path_parent}/{file["name"]}')
+                    path_directory.mkdir(parents=True, exist_ok=True)
+                    file["inside"] = traverse(id=file["id"], path_parent=path_directory)
+
+                else:
+                    self.down_file(file, path_parent)
+
+            return files_and_folders
+
+        return traverse(id, path_download)
+
+    def down_file(self, item, path_parent):
+        """
+        finish
+        """
+        file_id = item["id"]
+
+        request = self.service.files().get_media(fileId=file_id)
+
+        file_name = item["name"].replace("/", "_")  # replace illegal characters
+
+        path_file = Path(rf"{path_parent}/{file_name}")
+
+        if path_file.exists():
+            print(f"{path_file} already exists.")
+
+        with open(path_file, "wb") as fd:
+            downloader = MediaIoBaseDownload(fd, request)
+            done = False
+            while done is False:
+                status, done = downloader.next_chunk()
+                print(f"{path_file} is downloading {int(status.progress() * 100)}")
+
+    def files_folder(self, folder_id, pageSize=10):
 
         page_token = None
         while True:
@@ -94,7 +173,7 @@ class Drive:
                 self.service.files()
                 .list(
                     q=f"'{folder_id}' in parents",
-                    pageSize=10,
+                    pageSize=pageSize,
                     spaces="drive",
                     fields="nextPageToken, files(id, name, mimeType, parents)",
                     pageToken=page_token,
@@ -104,17 +183,14 @@ class Drive:
 
             items = response.get("files", [])
             page_token = response.get("nextPageToken", None)
-            print(items)
+
             print("next")
 
             if page_token is None:
                 break
-            # if not items:
-            # break
 
         if not items:
             print("No files found.")
-            return None
 
         return items
 
@@ -131,7 +207,7 @@ class Drive:
                     fields="nextPageToken, files(id, name)",
                     pageToken=page_token,
                     # driveId =  "0AIyERKEAMNpHUk9PVA",
-                    fileId=file_id
+                    fileId=file_id,
                 )
                 .execute()
             )
@@ -146,8 +222,9 @@ class Drive:
                     file_id = item["id"]
                     request = self.service.files().get_media(fileId=file_id)
 
-                    with open(item["name"], "wb") as fh:
-                        downloader = MediaIoBaseDownload(fh, request)
+                    with open(item["name"], "wb") as fd:
+                        downloader = MediaIoBaseDownload(fd, request)
+
                         done = False
                         while done is False:
                             status, done = downloader.next_chunk()

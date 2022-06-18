@@ -100,3 +100,6 @@ app-test:
 
 app:
 		$(PY) $(SRC)/app.py -url $(filter-out $@,$(MAKECMDGOALS))
+
+app-noargs:
+		$(PY) $(SRC)/app.py
