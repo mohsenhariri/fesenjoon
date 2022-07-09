@@ -1,12 +1,14 @@
 """
 DocString
+https://docs.python.org/3/library/io.html
 """
 import json
-from pathlib import Path
-from os import getenv
 import pickle
-from urllib.parse import urlparse
+from os import getenv
+from pathlib import Path
 from pprint import pprint as print
+from urllib.parse import urlparse
+
 from google.auth.transport.requests import Request
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
@@ -54,6 +56,10 @@ class Drive:
         id = parse[3]
         return type, id
 
+    def sanitizer(self, name: str) -> str:
+        file_name = name.replace("/", "_")  # replace illegal characters
+        return file_name
+
     def files_list(self):
         results = (
             self.service.files().list(pageSize=100, fields="files(id, name)").execute()
@@ -76,6 +82,51 @@ class Drive:
             while done is False:
                 status, done = downloader.next_chunk()
                 print("Download %d%%." % int(status.progress() * 100))
+
+    def download_google_files(self, url, export):
+        # https://developers.google.com/drive/api/guides/folder
+        _, id = self.id_parser(url)
+        mimeType = None
+        if export == "csv":
+            mimeType = "text/csv"
+        if export == "pdf":
+            mimeType = "application/pdf"
+
+        # print(id)
+        # mimeTypeMatchup = {
+        #     "application/vnd.google-apps.document": {
+        #         "exportType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        #         "docExt": "docx",
+        #     }
+        # }
+        # res = self.service.files().get(fileId=id).execute()
+        # print(res)
+        try:
+            # request = self.service.files().export(fileId=id, mimeType="application/pdf")
+            request_metadata = self.service.files().get(fileId=id).execute()
+
+            name = self.sanitizer(request_metadata["name"])
+
+            request = self.service.files().export(fileId=id, mimeType=mimeType)
+
+            # exit()
+            with open(f"./download/{name}.{export}", "wb") as fd:
+                downloader = MediaIoBaseDownload(fd, request)
+                # print(downloader.__dict__)
+                # print(request.__dict__)
+
+                done = False
+                while done is False:
+                    status, done = downloader.next_chunk()
+                    print("Download %d%%." % int(status.progress() * 100))
+
+            # exportMimeType =mimeTypeMatchup[docMimeType]['exportType']
+
+            # request = self.service.files().export_media(fileId=id,mimeType=exportMimeType)
+        except HttpError as error:
+            print(f"An error occurred: {error}")
+        except Exception as error:
+            print(f"An Exception occurred: {error}")
 
     def upload_file():
         pass

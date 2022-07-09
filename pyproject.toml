@@ -1,3 +1,22 @@
+# https://peps.python.org/pep-0621/
+# https://setuptools.pypa.io/en/latest/userguide/pyproject_config.html
 [build-system]
 requires = ["setuptools>=42"]
+# requires = ["setuptools", "setuptools-scm"]
 build-backend = "setuptools.build_meta"
+
+[project]
+authors = [
+  {name = "Mohsen Hariri", email = "mhariri68@gmail.com"},
+]
+dependencies = []
+description = "My package description"
+keywords = ["Boilerplate", "Template"]
+license = {text = "GPL-3.0 License"}
+name = "a-random-name-1"
+readme = "README.rst"
+requires-python = ">=3.9"
+version = "0.0.1"
+
+[tool.isort]
+profile = "black"

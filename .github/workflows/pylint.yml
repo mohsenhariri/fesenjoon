@@ -19,7 +19,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install black
           pip install pylint
+          pip install isort
       - name: Format
-        run: make format
-      - name: Lint
-        run: make pylint
+        run: |
+          make sort
+          make format
+        # run: make pylint
+      # - name: Lint

@@ -50,7 +50,6 @@ drive = Drive()
 url = "https://drive.google.com/drive/folders/1Eu2e4m3nH4Mwh8Jc6r_ULJ4U2y1nK6jK"
 
 
-
 # url = "https://drive.google.com/drive/folders/1xbMsmuiFXgNDC1YPX9-e61jUXLMSbroC"
 # url = "https://drive.google.com/drive/folders/118iMdI-X9S5o5-1sGrVK1P4_o6HzN4zr"
 
@@ -58,7 +57,19 @@ url = "https://drive.google.com/drive/folders/1Eu2e4m3nH4Mwh8Jc6r_ULJ4U2y1nK6jK"
 # url = "https://drive.google.com/drive/folders/1k7ZJYxJQF9APBsFgP9Q2BHGk_Rjn4iPY"
 # drive.down_all(url)
 
-print(drive.directory_structure(url))
+# print(drive.directory_structure(url))
 
 
 # drive.download_all(url)
+
+
+# url = "https://drive.google.com/drive/folders/10siyKtClyXCLAK3KVfbFHHL4RoCtjgK2"
+
+# print(drive.id_parser(url))
+# print(drive.directory_structure(url))
+
+url = "https://docs.google.com/spreadsheets/d/1P9HnkojMJnMRA---HfoEKrMH6bJyUCi7YXkXF_UhAWY/edit?usp=sharing"
+
+# print(drive.id_parser(url))
+drive.download_google_files(url, "pdf")
+drive.download_google_files(url, "csv")

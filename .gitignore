@@ -7,6 +7,10 @@ learn
 bookmarks.md
 .token
 .credentials
+download/*
+.poetry
+*_local.*
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

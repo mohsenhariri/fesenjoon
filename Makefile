@@ -11,10 +11,6 @@ BUILD := build
 
 .PHONY: env test all dev clean dev pyserve $(SRC) $(DIST) $(BUILD)
 
-PYPIU = mhariri
-PYPIP = password
-
-
 ifeq ($(SSL), true)
 PROTOCOL := HTTPS
 else
@@ -22,18 +18,26 @@ PROTOCOL := HTTP
 endif
 URL := $(PROTOCOL)://$(HOST):$(PORT)
 
+%: # https://www.gnu.org/software/make/manual/make.html#Automatic-Variables 
+		@:
+		
 cert: # HTTPS server
 		if [ ! -d "./certs" ]; then mkdir ./certs; fi
 		if [ -f "./certs/openssl.conf" ] ; then \
 		openssl req -x509 -new -config ./certs/openssl.conf -out ./certs/cert.pem -keyout ./certs/key.pem ;  else \
 		openssl req -x509 -nodes -newkey rsa:4096 -out ./certs/cert.pem -keyout ./certs/key.pem -sha256 -days 365 ;fi
 
-
 docker-up:
-		docker compose -p $(PROJECT) -f ./config/compose.yaml up -d
+		docker compose -p $(PROJECT) --env-file ./config/.env.docker -f ./config/compose.yaml up -d
 
 docker-down:
 		docker compose -p $(PROJECT) -f ./config/compose.yaml down
+
+docker-build:
+		docker build -t $(USER)/$(PROJECT):$(VERSION) .
+
+docker-run:
+		 docker container run --name $(PROJECT) -it  $(USER)/$(PROJECT):$(VERSION) /bin/bash
 
 clean:
 		rm -rf ./$(DIST)/* ./$(BUILD)/*
@@ -68,19 +72,59 @@ pia: requirements.txt
 		$(PY) -m pip install -r requirements.txt
 
 
-build:
+pkg-build:
 		$(PY) -m pip install --upgrade build
 		$(PY) -m build
 
-preview:
-		twine upload -r testpypi -u $(PYPIU) -p $(PYPIP) --repository-url https://test.pypi.org/legacy/ dist/*  --verbose 
+pkg-install-editable:
+		$(PY) -m pip install -e .
 
-preview2:
-		twine upload  --config-file .pypirc -r testpypi dist/*  --verbose 
+pkg-install:
+		$(PY) -m pip install .
 
-publish:
+pkg-check:
 		$(PY) -m pip install --upgrade twine
-		$(PY) -m twine upload --config-file .pypirc --repository testpypi dist/* --verbose  
+		twine check dist/*
+
+pkg-publish-test:
+		twine upload --config-file .pypirc.test -r testpypi dist/*  --verbose 
+
+pkg-publish:
+		twine upload --config-file .pypirc dist/* --verbose  
+
+pkg-flit-init:
+		$(PY) -m pip install --upgrade flit
+		if [ -f "pyproject.toml" ] ; then mv pyproject.toml pyproject.backup ;  fi
+		flit init
+
+pkg-flit-build:
+		flit build
+
+# pkg-flit-check:
+# 		flit install 
+
+pkg-flit-publish-test:
+		flit publish --repository testpypi
+
+pkg-flit-publish:
+		flit publish
+
+pkg-poetry-init:
+		if [ ! -d "./.poetry" ]; then mkdir ./poetry; fi
+		wget -P ./.poetry https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py
+		export POETRY_HOME=./.poetry && python ./.poetry/get-poetry.py --no-modify-path
+		if [ -f "pyproject.toml" ] ; then mv pyproject.toml pyproject.backup ;  fi
+		./.poetry/bin/poetry init
+
+pkg-poetry-build:
+		poetry build
+
+pkg-poetry-publish-test:
+		poetry publish --repository testpypi
+
+pkg-poetry-publish:
+		poetry publish
+
 
 pylint:
 		pylint --rcfile .pylintrc.dev $(SRC)
@@ -91,9 +135,25 @@ pylint-prod:
 format:
 		black $(SRC)
 
+sort:
+		isort $(SRC)
+		
+type:
+		mypy
 
-%: # https://www.gnu.org/software/make/manual/make.html#Automatic-Variables 
-		@:
+type-prod:
+		mypy --config-file .mypy.ini.prod
+
+g-commit: format type pylint
+		git commit -m "$(filter-out $@,$(MAKECMDGOALS))"
+
+g-log:
+		git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+
+unittest:
+		$(PY) -m unittest $(SRC)/test_*.py
+
+
 
 app-test:
 		$(PY) $(SRC)/app.py -url "https://drive.google.com/drive/folders/1Eu2e4m3nH4Mwh8Jc6r_ULJ4U2y1nK6jK"
