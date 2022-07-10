@@ -38,3 +38,9 @@ google = [
     "application/vnd.google-apps.unknown",
     "application/vnd.google-apps.video",
 ]
+
+
+mime_convert = {
+    "application/vnd.google-apps.spreadsheet": "application/pdf",
+    "application/vnd.google-apps.document": "application/pdf",
+}

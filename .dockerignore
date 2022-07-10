@@ -25,6 +25,7 @@ coverage.xml
 .vscode
 .dockerignore
 Dockerfile
+download
 *.md
 .mypy*
 .pylint*
@@ -32,3 +33,6 @@ Dockerfile
 scripts
 config
 other
+
+# .token
+# .credentials

@@ -120,12 +120,8 @@ class Drive:
 
         try:
             if file_mime in mime.google:
-                mime_convert = {
-                    "application/vnd.google-apps.spreadsheet": "application/pdf",
-                    "application/vnd.google-apps.document": "application/pdf",
-                }
-                mimeType = mime_convert[file_mime]
-                extension = "pdf"
+                mimeType = mime.mime_convert[file_mime]
+                extension = mimeType.split("/")[1]
                 file_name = f"{file_name}.{extension}"
 
                 request = self.service.files().export(fileId=file_id, mimeType=mimeType)

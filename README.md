@@ -58,3 +58,22 @@ https://developers.google.com/workspace/guides/auth-overview
 - Linter: Pylint
 - Formatter: Black
 - CI: GitHub Actions
+
+1.
+--url
+-u 
+2.
+depth
+default = 0 (just current directory)
+int
+string all
+
+3.
+default binary files
+--mimetype-includes
+--mimetype-excludes
+
+4.
+-out
+
+
