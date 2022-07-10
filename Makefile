@@ -162,3 +162,5 @@ download-file:
 download-gfile:
 		$(PY) $(SRC)/app.py -u "https://docs.google.com/spreadsheets/d/1jAskTUhauAySxJQQmQYT5ISFH1BK443RZTOnj9EvPeU/edit?usp=sharing" -o ./download/googlefiles
 
+use-memory:
+		$(PY) $(SRC)/app.py -u "https://drive.google.com/drive/folders/1rMeSCMlcsEVw8D7FXJFc3JVNUBk2JVu5"

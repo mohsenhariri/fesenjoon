@@ -108,9 +108,16 @@ class Drive:
         return items
 
     def file_metadata(self, file_id, out):
-        metadata = self.service.files().get(fileId=file_id).execute()
-        item = metadata
-        self.download_file(item, out)
+        try:
+            metadata = self.service.files().get(fileId=file_id).execute()
+            item = metadata
+            self.download_file(item, out)
+        except HttpError as error:
+            print(f"An error occurred: {error}")
+            print(f"An error occurred: {error.status_code}")
+
+        except Exception as error:
+            print(f"An Exception occurred: {error}")
 
     def download_file(self, item, path_parent):
         """ """
@@ -180,3 +187,22 @@ class Drive:
             return traverse(id, out, depth_current=0)
         else:
             self.file_metadata(id, out)
+
+    def download_file_memory(self, file_id):
+        """ """
+        try:
+            request = self.service.files().get_media(fileId=file_id)
+            binary_file = request.execute()
+            return binary_file
+
+        except HttpError as error:
+            print(f"An error occurred: {error}")
+        except Exception as error:
+            print(f"An Exception occurred: {error}")
+
+    def download_memory(self, url):
+        """ """
+        _, id = self.id_parser(url)
+        files_and_folders = self.files_folder(id)
+        for file in files_and_folders:
+            yield self.download_file_memory(file_id=file["id"])

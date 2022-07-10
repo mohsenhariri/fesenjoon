@@ -36,3 +36,9 @@ if not out.exists():
 drive = Drive()
 
 drive.download(url, depth, out)
+
+files_generator = drive.download_memory(url)
+
+for i, file in enumerate(files_generator):
+    with open(f"x{i}", "wb") as f:
+        f.write(file)

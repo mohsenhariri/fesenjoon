@@ -10,7 +10,7 @@ bookmarks.md
 download/*
 .poetry
 *_local.*
-
+other
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

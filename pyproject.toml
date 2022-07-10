@@ -18,5 +18,11 @@ readme = "README.rst"
 requires-python = ">=3.9"
 version = "0.0.1"
 
+[tool.setuptools.packages.find]
+where = ["src"] # ["."] by default
+# include = ["mypackage*"]  # ["*"] by default
+exclude = ["download", ".credentials", ".token"] # empty by default  
+namespaces = true # true by default
+
 [tool.isort]
 profile = "black"
