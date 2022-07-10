@@ -153,13 +153,12 @@ g-log:
 unittest:
 		$(PY) -m unittest $(SRC)/test_*.py
 
+download-folder:
+		$(PY) $(SRC)/app.py -u "https://drive.google.com/drive/folders/1Eu2e4m3nH4Mwh8Jc6r_ULJ4U2y1nK6jK" -d 8 -o ./download
 
+download-file:
+		$(PY) $(SRC)/app.py -u "https://drive.google.com/file/d/19XDepgl7JF0VkSGfqpn64W_uwAw7tmJG/view?usp=sharing" -o ./download/regularfiles
 
-app-test:
-		$(PY) $(SRC)/app.py -url "https://drive.google.com/drive/folders/1Eu2e4m3nH4Mwh8Jc6r_ULJ4U2y1nK6jK"
+download-gfile:
+		$(PY) $(SRC)/app.py -u "https://docs.google.com/spreadsheets/d/1jAskTUhauAySxJQQmQYT5ISFH1BK443RZTOnj9EvPeU/edit?usp=sharing" -o ./download/googlefiles
 
-app:
-		$(PY) $(SRC)/app.py -url $(filter-out $@,$(MAKECMDGOALS))
-
-app-noargs:
-		$(PY) $(SRC)/app.py

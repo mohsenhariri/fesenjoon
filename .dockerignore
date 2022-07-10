@@ -19,6 +19,7 @@ coverage.xml
 .pytest_cache
 .hypothesis
 
+*_local.*
 .git*
 .poetry
 .vscode
