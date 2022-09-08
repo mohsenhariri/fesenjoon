@@ -77,3 +77,14 @@ default binary files
 -out
 
 
+
+# Setup
+
+git clone git@github.com:mohsenhariri/google-drive.git
+python3 -m venv env
+make pia
+go to https://console.cloud.google.com/ and download your token (OAuth Client ID)
+copy token in the root path
+rename token with .credentials
+finish
+make app

@@ -74,6 +74,8 @@ class Drive:
 
     def files_folder(self, folder_id, pageSize=10):
 
+        files_all_pages = []
+
         page_token = None
         while True:
             """
@@ -94,18 +96,18 @@ class Drive:
                 .execute()
             )
 
-            items = response.get("files", [])
+            files_per_page = response.get("files", [])
             page_token = response.get("nextPageToken", None)
 
-            # print("next")
+            files_all_pages.extend(files_per_page)
 
             if page_token is None:
                 break
 
-        if not items:
+        if not files_all_pages:
             print("No files found.")
 
-        return items
+        return files_all_pages
 
     def file_metadata(self, file_id, out):
         try:
@@ -140,6 +142,9 @@ class Drive:
 
             if path_file.exists():
                 print(f"{path_file} already exists.")
+
+                file_name = f"{file_name}-{file_id}"
+                path_file = Path(rf"{path_parent}/{file_name}")
 
             with open(path_file, "wb") as fd:
                 downloader = MediaIoBaseDownload(fd, request)

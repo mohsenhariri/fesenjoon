@@ -2,7 +2,7 @@
 PATH := ./env/bin:${PATH}
 PY :=  $(VIRTUAL_ENV)/bin/python3
 
-include .env.dev
+include .env
 export
 
 SRC := src
@@ -154,7 +154,7 @@ unittest:
 		$(PY) -m unittest $(SRC)/test_*.py
 
 download-folder:
-		$(PY) $(SRC)/app.py -u "https://drive.google.com/drive/folders/1Eu2e4m3nH4Mwh8Jc6r_ULJ4U2y1nK6jK" -d 8 -o ./download
+		$(PY) $(SRC)/app.py -u "https://drive.google.com/drive/folders/1Eu2e4m3nH4Mwh8Jc6r_ULJ4U2y1nK6jK" -d 10 -o ./download
 
 download-file:
 		$(PY) $(SRC)/app.py -u "https://drive.google.com/file/d/19XDepgl7JF0VkSGfqpn64W_uwAw7tmJG/view?usp=sharing" -o ./download/regularfiles
@@ -164,3 +164,20 @@ download-gfile:
 
 use-memory:
 		$(PY) $(SRC)/app.py -u "https://drive.google.com/drive/folders/1rMeSCMlcsEVw8D7FXJFc3JVNUBk2JVu5"
+
+
+
+cp-mre-labels:
+		$(PY) $(SRC)/app.py -u "https://drive.google.com/drive/folders/10XArxkv1FwwHgPg-uWePXmDL8EqQMAAS" -o $(ROOT)/Data/Florian_processed/labeles_Res
+
+cp-mre-images-bf:
+		$(PY) $(SRC)/app.py -u "https://drive.google.com/drive/folders/1xbMsmuiFXgNDC1YPX9-e61jUXLMSbroC" -o $(ROOT)/Data/Florian_processed/MRI_NII_AX_RES_BF
+
+cp-cte-labels:
+		$(PY) $(SRC)/app.py -u "https://drive.google.com/drive/folders/1pqCkB9Y3mgvAT7avlavLHvdpiQdUzz8g" -o $(ROOT)/Data/Florian_CTE_processed/labels_res
+
+cp-cte-images:
+		$(PY) $(SRC)/app.py -u "https://drive.google.com/drive/folders/1pqTqb6idkSwb6t1d0yfGrLpIFPfY3JSX" -o $(ROOT)/Data/Florian_CTE_processed/CTE_Res
+
+
+# https://drive.google.com/drive/folders/118iMdI-X9S5o5-1sGrVK1P4_o6HzN4zr
