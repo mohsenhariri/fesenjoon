@@ -180,4 +180,7 @@ cp-cte-images:
 		$(PY) $(SRC)/app.py -u "https://drive.google.com/drive/folders/1pqTqb6idkSwb6t1d0yfGrLpIFPfY3JSX" -o $(ROOT)/Data/Florian_CTE_processed/CTE_Res
 
 
+cp-cte-upload-py:
+		$(PY) $(SRC)/app.py -up ./$(ROOT)/Data/Florian_CTE_processed/CTE_Res_NumPy
+
 # https://drive.google.com/drive/folders/118iMdI-X9S5o5-1sGrVK1P4_o6HzN4zr

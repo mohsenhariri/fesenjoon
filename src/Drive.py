@@ -1,6 +1,5 @@
 """
 DocString
-https://docs.python.org/3/library/io.html
 """
 import pickle
 from os import getenv
@@ -68,6 +67,7 @@ class Drive:
             print("URL is invalid.")
             exit(1)
 
+    @classmethod
     def sanitizer(self, name: str) -> str:
         file_name = name.replace("/", "_")  # replace illegal characters
         return file_name
@@ -211,3 +211,81 @@ class Drive:
         files_and_folders = self.files_folder(id)
         for file in files_and_folders:
             yield self.download_file_memory(file_id=file["id"])
+
+    def upload(self):
+        try:
+            # create gmail api client
+            service = self.service
+
+            file_metadata = {"name": "d.png"}
+            media = MediaFileUpload("d.png", mimetype="image/png")
+            # pylint: disable=maybe-no-member
+            file = (
+                service.files()
+                .create(body=file_metadata, media_body=media, fields="id")
+                .execute()
+            )
+            print(f'File ID: {file.get("id")}')
+
+        except HttpError as error:
+            print(f"An error occurred: {error}")
+            file = None
+
+        return f'https://drive.google.com/file/d/{file.get("id")}'
+
+    def create_folder(self, name):
+        try:
+            # create drive api client
+            # service = build('drive', 'v3', credentials=creds)
+            service = self.service
+
+            file_metadata = {
+                "name": name,
+                "mimeType": "application/vnd.google-apps.folder",
+            }
+
+            # pylint: disable=maybe-no-member
+            file = service.files().create(body=file_metadata, fields="id").execute()
+
+            print(f'Folder has created with ID: "{file.get("id")}".')
+
+        except HttpError as error:
+            print(f"An error occurred: {error}")
+            file = None
+
+        return file.get("id")
+
+    def upload_file(self, path_file, parent_id):
+        try:
+            # create gmail api client
+            service = self.service
+
+            file_metadata = {"name": path_file.name, "parents": [parent_id]}
+
+            # media = MediaFileUpload(path_file, mimetype="image/png")
+            media = MediaFileUpload(path_file)
+
+            file = (
+                service.files()
+                .create(body=file_metadata, media_body=media, fields="id")
+                .execute()
+            )
+            print(f'File ID: {file.get("id")}')
+
+        except HttpError as error:
+            print(f"An error occurred: {error}")
+            file = None
+
+    def upload_dir(self, path_upload):
+
+        folder_id = self.create_folder(path_upload.stem)
+
+
+        print( folder_id)
+        p = Path(path_upload)
+        # gen_files = p.glob('*')
+        gen_files = p.glob(r"**/*")
+
+        for path_file in gen_files:
+            # print(path_file)
+            self.upload_file(path_file, folder_id)
