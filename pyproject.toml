@@ -1,27 +1,39 @@
 # https://peps.python.org/pep-0621/
 # https://setuptools.pypa.io/en/latest/userguide/pyproject_config.html
 [build-system]
-requires = ["setuptools>=42"]
-# requires = ["setuptools", "setuptools-scm"]
 build-backend = "setuptools.build_meta"
+requires = ["setuptools", "setuptools-scm"]
 
 [project]
 authors = [
   {name = "Mohsen Hariri", email = "mhariri68@gmail.com"},
 ]
-dependencies = []
-description = "My package description"
-keywords = ["Boilerplate", "Template"]
-license = {text = "GPL-3.0 License"}
-name = "a-random-name-1"
+description = "A simple multiprocessing google drive api"
+dynamic = ["version"]
+keywords = ["google drive", "google cloud", "backup"]
+license = {file = "LICENSE"}
+name = "mh-gdrive"
 readme = "README.rst"
-requires-python = ">=3.9"
-version = "0.0.1"
+requires-python = ">=3.7"
+classifiers = [
+  "Programming Language :: Python :: 3.8",
+  "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+  "Operating System :: OS Independent",
+]
+dependencies = [
+  "google-api-python-client==2.60.0",
+  "google-auth-oauthlib==0.5.2",
+]
+
+[project.optional-dependencies]
+dev = [
+    "black>=18.3",
+]
 
 [tool.setuptools.packages.find]
 where = ["src"] # ["."] by default
 # include = ["mypackage*"]  # ["*"] by default
-exclude = ["download", ".credentials", ".token"] # empty by default  
+exclude = ["download", ".credentials", ".token"] # empty by default        
 namespaces = true # true by default
 
 [tool.isort]

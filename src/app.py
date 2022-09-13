@@ -27,7 +27,7 @@ args = parser.parse_args()
 url = args.url
 depth = int(args.depth_level)
 out = Path(args.out)
-path_upload = Path(args.upload_dir)
+# path_upload = Path(args.upload_dir)
 
 
 if not out.exists():
@@ -35,9 +35,9 @@ if not out.exists():
 
 drive = Drive()
 # print(depth)
-# drive.download(url, depth, out)
+drive.download(url, depth, out)
 
-print(drive.upload_dir(path_upload))
+# print(drive.upload_dir(path_upload))
 
 # files_generator = drive.download_memory(url)
 

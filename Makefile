@@ -166,7 +166,6 @@ use-memory:
 		$(PY) $(SRC)/app.py -u "https://drive.google.com/drive/folders/1rMeSCMlcsEVw8D7FXJFc3JVNUBk2JVu5"
 
 
-
 cp-mre-labels:
 		$(PY) $(SRC)/app.py -u "https://drive.google.com/drive/folders/10XArxkv1FwwHgPg-uWePXmDL8EqQMAAS" -o $(ROOT)/Data/Florian_processed/labeles_Res
 
@@ -184,3 +183,6 @@ cp-cte-upload-py:
 		$(PY) $(SRC)/app.py -up ./$(ROOT)/Data/Florian_CTE_processed/CTE_Res_NumPy
 
 # https://drive.google.com/drive/folders/118iMdI-X9S5o5-1sGrVK1P4_o6HzN4zr
+
+app-test:
+				$(PY) $(SRC)/app.py -u "https://drive.google.com/drive/folders/1lVruUyF1hJJmYelMzjK8gddPf_a1EeHr" 

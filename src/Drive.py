@@ -1,10 +1,14 @@
 """
-DocString
+Google drive api
+methods
+download
+upload
 """
 import pickle
 from os import getenv
 from pathlib import Path
-from pprint import pprint as print
+
+# from pprint import pprint as print
 from urllib.parse import urlparse
 
 from google.auth.transport.requests import Request
@@ -24,33 +28,53 @@ class Drive:
     ]
 
     def __init__(self) -> None:
-        creds = None
-
-        path_token = Path(getenv("PATH_TOKEN"))
+        # creds = None
+        path_creds_str = getenv("PATH_CREDS") or ".credentials"
+        path_token_str = getenv("PATH_TOKEN") or ".token"
+        path_creds = Path(path_creds_str)
+        path_token = Path(path_token_str)
 
         if path_token.exists():
-            with open(".token", "rb") as fp:
+            with open(path_token, "rb") as fp:
                 try:
                     creds = pickle.load(fp)
                 except Exception as err:
-                    print(".token file exists, but it damaged.", err)
+                    print(".token file exists, but it's damaged.", err)
+                    creds = None
 
-        if not creds or not creds.valid:
             if creds and creds.expired and creds.refresh_token:
                 creds.refresh(Request())
-            else:
-                flow = InstalledAppFlow.from_client_secrets_file(".credentials", SCOPES)
+
+        elif path_creds.exists():
+          
+            try:
+                flow = InstalledAppFlow.from_client_secrets_file(path_creds, SCOPES)
                 creds = flow.run_local_server(port=0)
+                with open(".token", "wb") as fp:
+                    pickle.dump(creds, fp)
+            except Exception as err:
+                print("21")
 
-            with open(".token", "wb") as fp:
-                pickle.dump(creds, fp)
+        else:
+            raise Exception("I need at least token or cred.")
 
-        try:
-            self.service = build("drive", "v3", credentials=creds)
-        except HttpError as err:
-            print("Can not stablish the connection.", err)
+        if creds.valid:
+            try:
+                self.service = build("drive", "v3", credentials=creds)
+            except HttpError as err:
+                print("Can not stablish the connection.", err)
+        else:
+            raise Exception("can not find valid creds")
 
     def id_parser(self, url):
+        """
+        Traverse given directory
+        :param path_qs: query string with path to walk to
+        :param start_path: the path that can be in the form of scheme://path/
+        :param include_pat:
+        :param exclude_pat:
+        :return:
+        """
         """
         type =
         drive
@@ -263,7 +287,7 @@ class Drive:
             file_metadata = {"name": path_file.name, "parents": [parent_id]}
 
             # media = MediaFileUpload(path_file, mimetype="image/png")
-            media = MediaFileUpload(path_file)
+            media = MediaFileUpload(path_file, resumable=True)
 
             file = (
                 service.files()
@@ -280,8 +304,7 @@ class Drive:
 
         folder_id = self.create_folder(path_upload.stem)
 
-
-        print( folder_id)
+        print(folder_id)
         p = Path(path_upload)
         # gen_files = p.glob('*')
         gen_files = p.glob(r"**/*")
