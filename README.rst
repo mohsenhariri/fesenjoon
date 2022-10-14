@@ -1,90 +1,62 @@
-# Python Template
+fesenjoon
+===========
 
-A [simple] [general-purpose] Python template 🐍🚀🎉🦕
-
-### Bootstrap
-
-```
-    make env
-```
-
-```
-    source env/bin/activate
-```
-
-```
-    make check
-```
-
-```
-    make test
-```
-
-### Run
-
-```
-    make app-test
-```
-
-with a url
-
-```
-    make app https://drive.google.com/drive/folders/1Eu2e4m3nH4Mwh8Jc6r_ULJ4U2y1nK6jK
-
-```
-
-### Install packages
-
-```
-    pylint
-    black
-    google-api-python-client
-    google-auth-oauthlib
-```
-
-https://github.com/googleapis/google-api-python-client
-
-https://github.com/googleapis/google-auth-library-python-oauthlib
-
-https://developers.google.com/drive/api/guides/about-sdk
-
-![photo](https://developers.google.com/drive/images/drive-intro.png)
-
-https://developers.google.com/workspace/guides/auth-overview
-![image](https://developers.google.com/workspace/images/auth-overview.png)
-
-## Features
-
-- Linter: Pylint
-- Formatter: Black
-- CI: GitHub Actions
-
-1.
---url
--u 
-2.
-depth
-default = 0 (just current directory)
-int
-string all
-
-3.
-default binary files
---mimetype-includes
---mimetype-excludes
-
-4.
--out
+Documentation_ -- GitHub_ 
 
 
+A simple package
 
-# Setup
+.. code-block:: python
 
-git clone git@github.com:mohsenhariri/google-drive.git
-python3 -m venv env
-make pia
-go to https://console.cloud.google.com/ and download your token (OAuth Client ID)
-copy token in the root path
-rename token with .credentials
-finish
-make app
+    from fesenjoon import Drive
+
+    # NOTE: URI params must be strings not integers
+
+    gist_uri = 'https://api.github.com/gists{/gist_id}'
+    t = URITemplate(gist_uri)
+    print(t.expand(gist_id='123456'))
+    # => https://api.github.com/users/sigmavirus24/gists/123456
+
+    # or
+    print(expand(gist_uri, gist_id='123456'))
+
+    # also
+    t.expand({'gist_id': '123456'})
+    print(expand(gist_uri, {'gist_id': '123456'}))
+
+Where it might be useful to have a class
+
+.. code-block:: python
+
+    import requests
+
+    class GitHubUser(object):
+        url = URITemplate('https://api.github.com/user{/login}')
+        def __init__(self, name):
+            self.api_url = url.expand(login=name)
+            response = requests.get(self.api_url)
+            if response.status_code == 200:
+                self.__dict__.update(response.json())
+
+When the module containing this class is loaded, ``GitHubUser.url`` is
+evaluated and so the template is created once. It's often hard to notice in
+Python, but object creation can consume a great deal of time and so can the
+``re`` module which uritemplate relies on. Constructing the object once should
+reduce the amount of time your code takes to run.
+
+Installing
+----------
+
+::
+
+    pip install fesenjoon
+
+License
+-------
+
+GPL license_
+
+
+.. _Documentation: https://fesenjoon.readthedocs.io/
+.. _GitHub: https://github.com/mohsenhariri/fesenjoon
+.. _license: https://github.com/mohsenhariri/fesenjoon/blob/main/LICENSE

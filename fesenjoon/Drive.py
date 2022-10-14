@@ -17,7 +17,7 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from googleapiclient.http import MediaFileUpload, MediaIoBaseDownload
 
-import mime
+import fesenjoon.mime as mime
 
 
 class Drive:
@@ -46,7 +46,7 @@ class Drive:
                 creds.refresh(Request())
 
         elif path_creds.exists():
-          
+
             try:
                 flow = InstalledAppFlow.from_client_secrets_file(path_creds, SCOPES)
                 creds = flow.run_local_server(port=0)

@@ -1,15 +1,23 @@
 # https://www.gnu.org/software/make/manual/make.html
-PATH := ./env/bin:${PATH}
-PY :=  $(VIRTUAL_ENV)/bin/python3
+# PYTHON := /media/mohsen/ssd500/compilers/py3_10_7/bin/python3.10
+PYTHON := /usr/bin/python3
+DOCKER := /usr/bin/docker 
 
-include .env
+PATH := $(VIRTUAL_ENV)/bin:$(PATH)
+PY :=  $(VIRTUAL_ENV)/bin/python
+
+include .env.dev
 export
 
-SRC := src
+SRC := fesenjoon
 DIST := dist
 BUILD := build
 
+PYTHONPATH := $(SRC):$(PYTHONPATH)
+
 .PHONY: env test all dev clean dev pyserve $(SRC) $(DIST) $(BUILD)
+.DEFAULT_GOAL := test
+.ONESHELL:
 
 ifeq ($(SSL), true)
 PROTOCOL := HTTPS
@@ -71,8 +79,7 @@ piu:
 pia: requirements.txt
 		$(PY) -m pip install -r requirements.txt
 
-
-pkg-build:
+pkg-build: clean
 		$(PY) -m pip install --upgrade build
 		$(PY) -m build
 
@@ -124,7 +131,6 @@ pkg-poetry-publish-test:
 
 pkg-poetry-publish:
 		poetry publish
-
 
 pylint:
 		pylint --rcfile .pylintrc.dev $(SRC)
