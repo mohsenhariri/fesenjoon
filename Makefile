@@ -54,7 +54,7 @@ clcache:
 		rm -r ./__pycache__
 
 env: 
-		$(PY) -m venv env
+		$(PYTHON) -m venv env
 
 check:
 		$(PY) -m ensurepip --default-pip
@@ -132,10 +132,10 @@ pkg-poetry-publish-test:
 pkg-poetry-publish:
 		poetry publish
 
-pylint:
+lint:
 		pylint --rcfile .pylintrc.dev $(SRC)
 
-pylint-prod:
+lint-prod:
 		pylint --rcfile .pylintrc.prod $(SRC)
 
 format:
