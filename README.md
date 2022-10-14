@@ -1,37 +1,32 @@
-# Python Template
+# Fesenjoon
 
-A [simple] [general-purpose] Python template 🐍🚀🎉🦕
 
-### Bootstrap
-
-```
-    make env
-```
+## Install
 
 ```
-    source env/bin/activate
+    pip install fesenjoon
+```
+
+## API call
+
+```
+    import fesenjoon
+
+    drive = fesenjoon.Drive()
 ```
 
 ```
-    make check
+    from fesenjoon import Drive
+    drive = Drive()
 ```
 
-```
-    make test
-```
 
-### Run
+## Command Line
 
 ```
-    make app-test
+    fesenjoon -u https://drive.google.com/drive/folders/1Eu2e4m3nH4Mwh8Jc6r_ULJ4U2y1nK6jK
 ```
 
-with a url
-
-```
-    make app https://drive.google.com/drive/folders/1Eu2e4m3nH4Mwh8Jc6r_ULJ4U2y1nK6jK
-
-```
 
 ### Install packages
 
@@ -80,11 +75,18 @@ default binary files
 
 # Setup
 
-git clone git@github.com:mohsenhariri/google-drive.git
+git clone git@github.com:mohsenhariri/fesenjoon.git
+
 python3 -m venv env
+
 make pia
+
 go to https://console.cloud.google.com/ and download your token (OAuth Client ID)
+
 copy token in the root path
+
 rename token with .credentials
+
 finish
+
 make app

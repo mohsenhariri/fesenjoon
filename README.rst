@@ -8,8 +8,9 @@ A simple package
 
 .. code-block:: python
 
-    from fesenjoon import Drive
+    import fesenjoon
 
+    drive = fesenjoon.Drive()
     # NOTE: URI params must be strings not integers
 
     gist_uri = 'https://api.github.com/gists{/gist_id}'
@@ -28,15 +29,9 @@ Where it might be useful to have a class
 
 .. code-block:: python
 
-    import requests
+    from fesenjoon import Drive
+    drive = Drive()
 
-    class GitHubUser(object):
-        url = URITemplate('https://api.github.com/user{/login}')
-        def __init__(self, name):
-            self.api_url = url.expand(login=name)
-            response = requests.get(self.api_url)
-            if response.status_code == 200:
-                self.__dict__.update(response.json())
 
 When the module containing this class is loaded, ``GitHubUser.url`` is
 evaluated and so the template is created once. It's often hard to notice in

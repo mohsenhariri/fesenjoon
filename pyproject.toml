@@ -10,7 +10,7 @@ authors = [
   {name = "Mohsen Hariri", email = "mhariri68@gmail.com"},
 ]
 description = "A simple multiprocessing google drive api"
-version = "0.0.2"
+version = "0.0.3"
 keywords = ["google drive", "google cloud", "backup"]
 license = {text = "GPL-3.0 License"}
 readme = "README.rst"
