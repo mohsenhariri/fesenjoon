@@ -29,6 +29,10 @@ dependencies = [
 [tool.setuptools]
 packages = ["fesenjoon"]
 
+# https://setuptools.pypa.io/en/latest/userguide/entry_point.html#console-scripts
+[project.scripts]
+fesenjoon = "fesenjoon.cli:main"
+
 [project.optional-dependencies]
 dev = [
     "black>=18.3",

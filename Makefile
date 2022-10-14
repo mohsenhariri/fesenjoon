@@ -9,6 +9,8 @@ PY :=  $(VIRTUAL_ENV)/bin/python
 include .env.dev
 export
 
+include *.make
+
 SRC := fesenjoon
 DIST := dist
 BUILD := build

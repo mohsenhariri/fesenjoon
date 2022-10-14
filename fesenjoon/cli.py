@@ -1,11 +1,15 @@
+import sys
+
 from argparse import ArgumentParser
 from os import getenv
 from pathlib import Path
 
-from Drive import Drive
+from fesenjoon import Drive
 
 path_download_required = False
-path_download = Path(getenv("PATH_DOWNLOAD"))
+
+# path_download = Path(getenv("PATH_DOWNLOAD"))
+path_download = Path(r"./download")
 
 if not path_download.exists():
     path_download.mkdir(parents=True)
@@ -13,6 +17,10 @@ if not path_download.exists():
 parser = ArgumentParser(description="URL of file or folder")
 
 # parser.add_argument("-u", "--url", help="URL", type=str, default=None, required=True)
+
+parser.add_argument("download", help="URL", type=str, default=None)
+
+
 parser.add_argument("-u", "--url", help="URL", type=str, default=None)
 
 parser.add_argument("-d", "--depth-level", help="Depth", type=str, default="0")
@@ -25,6 +33,9 @@ parser.add_argument("-up", "--upload-dir", help="UPLOAD DIR", type=str)
 
 args = parser.parse_args()
 url = args.url
+
+args.download 
+
 depth = int(args.depth_level)
 out = Path(args.out)
 # path_upload = Path(args.upload_dir)
@@ -33,14 +44,27 @@ out = Path(args.out)
 if not out.exists():
     out.mkdir(parents=True)
 
-drive = Drive()
-# print(depth)
-drive.download(url, depth, out)
 
-# print(drive.upload_dir(path_upload))
+print(url,depth,out)
 
-# files_generator = drive.download_memory(url)
+def main():
+    print("in main")
+    args = sys.argv[1:]
+    print("count of args :: {}".format(len(args)))
 
-# for i, file in enumerate(files_generator):
-#     with open(f"x{i}", "wb") as f:
-#         f.write(file)
+    for arg in args:
+        print("passed ;jargument :: {}".format(arg))
+
+
+    drive = Drive()
+
+    drive.download(url, depth, out)
+    # drive = Drive()
+    
+
+    drive.check_cli()
+
+
+
+if __name__ == "__main__":
+    main()

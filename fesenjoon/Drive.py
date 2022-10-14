@@ -66,6 +66,9 @@ class Drive:
         else:
             raise Exception("can not find valid creds")
 
+    def check_cli(self):
+        print("check cli")
+
     def id_parser(self, url):
         """
         Traverse given directory
